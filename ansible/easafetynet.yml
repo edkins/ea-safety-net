@@ -1,0 +1,23 @@
+---
+- hosts: easafetynet
+  remote_user: root
+  gather_facts: no
+
+  pre_tasks:
+  - name: make sure python 2 is installed
+    raw: apt-get install -y python-simplejson
+
+  tasks:
+  - name: NGINX | Updating apt cache
+    apt:
+      update_cache: yes
+ 
+  - name: NGINX | Installing NGINX
+    apt:
+      pkg: nginx
+      state: latest
+ 
+  - name: NGINX | Starting NGINX
+    service:
+      name: nginx
+      state: started
