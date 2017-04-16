@@ -18,6 +18,25 @@
       delete: yes
       recursive: yes
 
+  - name: Update server-side python scripts
+    synchronize:
+      src: ../serv/
+      dest: /opt/easn/
+      delete: yes
+      recursive: yes
+    notify: "restart services"
+
+  - name: Update kickbot systemd unit
+    synchronize:
+      src: ../config-files/kickbot.service
+      dest: /etc/systemd/system/kickbot.service
+    notify: "restart services"
+
   handlers:
     - name: restart nginx
       command: nginx -s reload
+
+    - name: restart services
+      service:
+        name: kickbot
+        state: restarted
