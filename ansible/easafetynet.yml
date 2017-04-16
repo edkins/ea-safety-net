@@ -21,3 +21,28 @@
     service:
       name: nginx
       state: started
+
+  - template:
+      src: ../config-files/nginx-http.j2
+      dest: /etc/nginx/sites-available/easn-http
+    notify: "restart nginx"
+
+  - template:
+      src: ../config-files/nginx-https.j2
+      dest: /etc/nginx/sites-available/easn-https
+    notify: "restart nginx"
+
+  - file:
+      path: /etc/nginx/sites-enabled/default
+      state: absent
+    notify: "restart nginx"
+
+  - file:
+      src: /etc/nginx/sites-available/easn-http
+      dest: /etc/nginx/sites-enabled/easn-http
+      state: link
+    notify: "restart nginx"
+
+  handlers:
+    - name: restart nginx
+      command: nginx -s reload

@@ -1,0 +1,25 @@
+---
+- hosts: easafetynet
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: create www directory
+    file:
+      path: /var/www/easn
+      state: directory
+
+  - name: add certbot apt repository
+    apt_repository:
+      repo: ppa:certbot/certbot
+      state: present
+      update_cache: yes
+
+  - name: install certbot
+    apt:
+      pkg: certbot
+      state: latest
+
+  - name: obtain certificates with certbot
+    command:
+      certbot certonly -n --webroot -w /var/www/easn -d {{ ansible_host }} --agree-tos --email {{ email }} creates=/etc/letsencrypt/live/{{ ansible_host }}/privkey.pem

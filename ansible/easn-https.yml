@@ -1,0 +1,23 @@
+---
+- hosts: easafetynet
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: Enable https server
+    file:
+      src: /etc/nginx/sites-available/easn-https
+      dest: /etc/nginx/sites-enabled/easn-https
+      state: link
+    notify: "restart nginx"
+
+  - name: Update static web assets
+    synchronize:
+      src: ../web/
+      dest: /var/www/easn/
+      delete: yes
+      recursive: yes
+
+  handlers:
+    - name: restart nginx
+      command: nginx -s reload
