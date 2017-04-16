@@ -1,0 +1,9 @@
+{
+	"type": "object",
+	"properties": {
+		"challenge": { "type": "string" }
+	},
+	"required": ["challenge"],
+	"additionalProperties": false
+}
+

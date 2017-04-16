@@ -1,0 +1,11 @@
+{
+	"type": "object",
+	"properties": {
+		"token": { "type": "string" },
+		"challenge": { "type": "string" },
+		"type": { "enum": ["url_verification"] }
+	},
+	"required": ["token","challenge","type"],
+	"additionalProperties": false
+}
+

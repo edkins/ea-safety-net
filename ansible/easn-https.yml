@@ -4,6 +4,12 @@
   gather_facts: no
 
   tasks:
+  - name: Update https nginx config
+    template:
+      src: ../config-files/nginx-https.j2
+      dest: /etc/nginx/sites-available/easn-https
+    notify: "restart nginx"
+
   - name: Enable https server
     file:
       src: /etc/nginx/sites-available/easn-https
@@ -18,19 +24,39 @@
       delete: yes
       recursive: yes
 
+  - name: install pip
+    apt:
+      name: python3-pip
+
+  - name: pip jsonschema
+    pip:
+      executable: pip3
+      name: jsonschema
+
   - name: Update server-side python scripts
     synchronize:
       src: ../serv/
       dest: /opt/easn/
       delete: yes
       recursive: yes
-    notify: "restart services"
+    notify: restart services
+
+  - name: Create etc/easn
+    file:
+      path: /etc/easn
+      state: directory
+
+  - name: Update kickbot config
+    template:
+      src: ../config-files/kickbot-conf.j2
+      dest: /etc/easn/kickbot.conf
+    notify: restart services
 
   - name: Update kickbot systemd unit
     synchronize:
       src: ../config-files/kickbot.service
       dest: /etc/systemd/system/kickbot.service
-    notify: "restart services"
+    notify: restart services
 
   handlers:
     - name: restart nginx
