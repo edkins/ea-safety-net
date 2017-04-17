@@ -83,7 +83,7 @@ class KickBotHandler(BaseHTTPRequestHandler):
 		ev = req['event']
 		if 'text' in ev and 'kick me' in ev['text'] and 'channel' in ev and 'user' in ev:
 			print('Kicking a user')
-			slack_api('channels.kick', {"channel":ev['channel'], "user":ev['user']})
+			slack_api('groups.kick', {"channel":ev['channel'], "user":ev['user']})
 		self.empty_response()
 
 def run():
