@@ -4,9 +4,12 @@
 		"slackTokenHash": {
 			"type": "string",
 			"pattern": "^[0-9a-f]{64}$"
+		},
+		"oauthToken": {
+			"type": "string"
 		}
 	},
-	"required": ["slackTokenHash"],
+	"required": ["slackTokenHash","oauthToken"],
 	"additionalProperties": false
 }
 
