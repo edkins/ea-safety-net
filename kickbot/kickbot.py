@@ -4,9 +4,9 @@ import jsonschema
 import hashlib
 import requests
 
-kickbot_conf_schema = json.load(open('/opt/easn/json-schema/kickbot-conf.json'))
-slack_request_schema = json.load(open('/opt/easn/json-schema/slack-request.json'))
-slack_challenge_response_schema = json.load(open('/opt/easn/json-schema/slack-challenge-response.json'))
+kickbot_conf_schema = json.load(open('/opt/easn/kickbot/kickbot-conf.json'))
+slack_request_schema = json.load(open('/opt/easn/kickbot/slack-request.json'))
+slack_challenge_response_schema = json.load(open('/opt/easn/kickbot/slack-challenge-response.json'))
 
 def read_json_file(filename, schema):
 	with open(filename) as file:
@@ -24,7 +24,8 @@ def slack_api(method, data):
 	r.raise_for_status()
 	response = r.json()
 	if 'ok' not in response or not response['ok']:
-		raise ValueError('Non-ok response for slack api method ' + method)
+		error = str(response['error']) if 'error' in response else 'none'
+		raise ValueError('Non-ok response for slack api method ' + method + ' ' + error)
 	return response
 
 class KickBotHandler(BaseHTTPRequestHandler):

@@ -1,0 +1,12 @@
+{
+	"type": "object",
+	"properties": {
+		"client_id": { "type": "string" },
+		"client_secret": { "type": "string" },
+		"status": { "enum": ["sandbox","production"] },
+		"team_id": { "type": "string" }
+	},
+	"required": ["client_id","client_secret","status","team_id"],
+	"additionalProperties": false
+}
+

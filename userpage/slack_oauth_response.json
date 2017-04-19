@@ -1,0 +1,35 @@
+{
+	"anyOf": [
+	{
+		"type": "object",
+		"properties": {
+			"ok": { "enum": [true] },
+			"access_token": { "type": "string" },
+			"scope": { "enum": ["identity.basic"] },
+			"user": {
+				"type": "object",
+				"properties": {
+					"name": { "type": "string" },
+					"id": { "type": "string" }
+				},
+				"required": ["name","id"]
+			},
+			"team": {
+				"type": "object",
+				"properties": {
+					"id": { "type": "string" }
+				},
+				"required": ["id"]
+			}
+		},
+		"required": ["ok", "access_token", "scope", "user", "team"]
+	},{
+		"type": "object",
+		"properties": {
+			"ok": { "enum": [false] },
+			"error": { "type": "string" }
+		},
+		"required": ["ok", "error"]
+	}]
+}
+

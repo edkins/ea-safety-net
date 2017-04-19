@@ -1,0 +1,14 @@
+---
+  - name: Update https nginx config
+    template:
+      src: ../config-files/nginx-https.j2
+      dest: /etc/nginx/sites-available/easn-https
+    notify: "restart nginx"
+
+  - name: Enable https server
+    file:
+      src: /etc/nginx/sites-available/easn-https
+      dest: /etc/nginx/sites-enabled/easn-https
+      state: link
+    notify: "restart nginx"
+

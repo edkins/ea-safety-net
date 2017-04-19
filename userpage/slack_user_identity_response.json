@@ -1,0 +1,23 @@
+{
+	"type": "object",
+	"properties": {
+		"ok": { "enum": [true] },
+		"user": {
+			"type": "object",
+			"properties": {
+				"name": { "type": "string" },
+				"id": { "type": "string" }
+			},
+			"required": ["name","id"]
+		},
+		"team": {
+			"type": "object",
+			"properties": {
+				"id": { "type": "string" }
+			},
+			"required": ["id"]
+		}
+	},
+	"required": ["ok", "user", "team"]
+}
+

@@ -3,4 +3,4 @@ Description=Server for slack app which kicks users out of private channels if th
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /opt/easn/kickbot.py
+ExecStart=/usr/bin/python3 -u /opt/easn/kickbot/kickbot.py

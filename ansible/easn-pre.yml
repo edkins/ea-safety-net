@@ -43,6 +43,19 @@
       state: link
     notify: "restart nginx"
 
+  - name: Create etc/easn
+    file:
+      path: /etc/easn
+      state: directory
+
+  - name: install pip
+    apt:
+      name: python3-pip
+
+  - name: pip jsonschema
+    pip:
+      executable: pip3
+      name: jsonschema
+
   handlers:
-    - name: restart nginx
-      command: nginx -s reload
+    - include: easn-handlers.yml
