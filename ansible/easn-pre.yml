@@ -48,14 +48,29 @@
       path: /etc/easn
       state: directory
 
-  - name: install pip
+  - name: Install pip
     apt:
       name: python3-pip
 
-  - name: pip jsonschema
+  - name: Install jsonschema
     pip:
       executable: pip3
       name: jsonschema
+
+  - name: Install wsgi
+    pip: 
+      executable: pip3
+      name: uwsgi
+
+  - name: Install beaker
+    pip: 
+      executable: pip3
+      name: beaker
+
+  - name: Install selector
+    pip: 
+      executable: pip3
+      name: selector
 
   handlers:
     - include: easn-handlers.yml
