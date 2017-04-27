@@ -6,6 +6,16 @@
   tasks:
   - include: easn-https-tasks.yml
 
+  - name: Install wsgi
+    pip: 
+      executable: pip3
+      name: uwsgi
+
+  - name: Install beaker
+    pip: 
+      executable: pip3
+      name: beaker
+
   - name: Update index.html
     template:
       src: ../web/index.j2

@@ -3,4 +3,5 @@ Description=Handles user page with slack login
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 -u /opt/easn/userpage/userpage.py
+ExecStart=/usr/local/bin/uwsgi --socket 127.0.0.1:8082 -w wsgi
+WorkingDirectory=/opt/easn/userpage
