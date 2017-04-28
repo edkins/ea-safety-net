@@ -8,10 +8,8 @@ import time
 import traceback
 import urllib.parse
 
-session_timeout_seconds = 30.0
-userpage_conf_schema = json.load(open('/opt/easn/userpage/userpage_conf.json'))
-slack_oauth_response_schema = json.load(open('/opt/easn/userpage/slack_oauth_response.json'))
-slack_user_identity_response_schema = json.load(open('/opt/easn/userpage/slack_user_identity_response.json'))
+from up_conf import schema
+from up_conf import userpage_conf
 
 class SlackServerError(Exception):
 	pass
@@ -19,21 +17,13 @@ class SlackServerError(Exception):
 class AuthorizationFailure(Exception):
 	pass
 
-def read_json_file(filename, schema):
-	with open(filename) as file:
-		obj = json.load(file)
-		jsonschema.validate(obj, schema)
-		return obj
-
-userpage_conf = read_json_file('/etc/easn/userpage.conf', userpage_conf_schema)
-
 def slack_oauth(code):
 	url = 'https://slack.com/api/oauth.access'
 	params = {"client_id":userpage_conf['client_id'], "client_secret":userpage_conf['client_secret'], "code":code}
 	r = requests.get(url, params=params)
 	r.raise_for_status()
 	response = r.json()
-	jsonschema.validate(response, slack_oauth_response_schema)
+	jsonschema.validate(response, schema.slack_oauth_response)
 	if not response['ok']:
 		raise SlackServerError('Error from oauth.access ' + response['error'])
 	if response['team']['id'] != userpage_conf['team_id']:
@@ -46,7 +36,7 @@ def slack_user_identity(token):
 	r = requests.get(url, params=params)
 	r.raise_for_status()
 	response = r.json()
-	jsonschema.validate(response, slack_user_identity_response_schema)
+	jsonschema.validate(response, schema.slack_user_identity_response)
 	if response['team']['id'] != userpage_conf['team_id']:
 		raise ValueError('Wrong team_id on users.identity')
 	return response['user']
@@ -97,7 +87,7 @@ def valid_session_stuff(a, env, start_response):
 		print('session.last_accessed is None')
 		return session_timed_out(env, start_response)
 	time_elapsed = time.time() - session.last_accessed
-	if time_elapsed >= session_timeout_seconds:
+	if time_elapsed >= userpage_conf['session_timeout_seconds']:
 		print('session timed out with time elapsed ' + str(time_elapsed))
 		return session_timed_out(env, start_response)
 	if 'user_id' not in session:

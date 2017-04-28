@@ -1,4 +1,9 @@
 ---
+- name: data migration
+  command: python3 do_migrations.py
+  args:
+    chdir: /opt/easn/userpage
+
 - name: restart nginx
   command: nginx -s reload
 

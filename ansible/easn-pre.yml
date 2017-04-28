@@ -48,6 +48,10 @@
       path: /etc/easn
       state: directory
 
+  - name: Install pip (python2)
+    apt:
+      name: python-pip
+
   - name: Install pip
     apt:
       name: python3-pip
@@ -71,6 +75,20 @@
     pip: 
       executable: pip3
       name: selector
+
+  - name: Install postgresql
+    apt:
+      name: postgresql
+
+  - name: Install psycopg2 (python2)
+    pip:
+      executable: pip
+      name: psycopg2
+
+  - name: Install psycopg2
+    pip:
+      executable: pip3
+      name: psycopg2
 
   handlers:
     - include: easn-handlers.yml

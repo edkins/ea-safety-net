@@ -2,6 +2,25 @@
 - hosts: easafetynet
   remote_user: root
   gather_facts: no
+  become: yes
+  become_user: postgres
+
+  tasks:
+  - name: Create postgresql db
+    postgresql_db:
+      name: easn
+
+  - name: Create postgresql migration user
+    postgresql_user:
+      db: easn
+      name: migration
+      password: "{{ db_migration_password }}"
+      role_attr_flags: "NOSUPERUSER,NOCREATEDB,LOGIN"
+      priv: "ALL"
+
+- hosts: easafetynet
+  remote_user: root
+  gather_facts: no
 
   tasks:
   - include: easn-https-tasks.yml
@@ -24,7 +43,9 @@
       dest: /opt/easn/userpage/
       delete: yes
       recursive: yes
-    notify: restart userpage
+    notify:
+    - data migration
+    - restart userpage
 
   - name: Update userpage config
     template:
