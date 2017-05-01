@@ -18,6 +18,36 @@
       role_attr_flags: "NOSUPERUSER,NOCREATEDB,LOGIN"
       priv: "ALL"
 
+  - name: Create postgresql app user
+    postgresql_user:
+      db: easn
+      name: app
+      password: "{{ db_app_password }}"
+      role_attr_flags: "NOSUPERUSER,NOCREATEDB,LOGIN"
+      priv: "ALL"
+
+  - name: Set table access privileges for app user
+    postgresql_privs:
+      state: present
+      database: easn
+      privs: SELECT,INSERT,UPDATE
+      type: table
+      objs: ALL_IN_SCHEMA
+      schema: public
+      roles: app
+      grant_option: yes
+
+  - name: Set sequence access privileges for app user
+    postgresql_privs:
+      state: present
+      database: easn
+      privs: SELECT,UPDATE
+      type: sequence
+      objs: ALL_IN_SCHEMA
+      schema: public
+      roles: app
+      grant_option: yes
+
 - hosts: easafetynet
   remote_user: root
   gather_facts: no

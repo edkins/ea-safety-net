@@ -86,11 +86,20 @@ class Schema:
 			self.current_versions = dict(self.versions)
 			print('---')
 
-def db_for_migration():
+def _db(db_user, db_password):
 	db_host = userpage_conf['db_host']
 	db_port = userpage_conf['db_port']
 	db_name = userpage_conf['db_name']
+	return dbapi2.connect(host=db_host, port=db_port, database=db_name, user=db_user, password=db_password)
+
+def db_for_migration():
 	db_user = userpage_conf['db_migration_user']
 	db_password = userpage_conf['db_migration_password']
-	return dbapi2.connect(host=db_host, port=db_port, database=db_name, user=db_user, password=db_password)
+	return _db(db_user, db_password)
+
+def db_for_app():
+	db_user = userpage_conf['db_app_user']
+	db_password = userpage_conf['db_app_password']
+	return _db(db_user, db_password)
+
 

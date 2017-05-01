@@ -10,6 +10,7 @@ import urllib.parse
 
 from up_conf import schema
 from up_conf import userpage_conf
+import up_backend
 
 class SlackServerError(Exception):
 	pass
@@ -66,9 +67,11 @@ def app_slackauth(env, start_response):
 		code = q['code']
 		resp = slack_oauth(code)
 		token = resp['access_token']
-		user_name = resp['user']['name']
-		user_id = resp['user']['id']
+		slack_team_id = resp['team']['id']
+		slack_user_id = resp['user']['id']
+		slack_user_name = resp['user']['name']
 
+		user_id = up_backend.get_or_create_user_id(slack_team_id, slack_user_id, slack_user_name)
 		create_session(env, user_id)
 
 		return redirect('/userpage/home', env, start_response)

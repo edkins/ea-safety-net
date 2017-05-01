@@ -5,3 +5,9 @@ def migrations(schema):
 		logout_date TIMESTAMP WITH TIME ZONE,
 		name VARCHAR NOT NULL,
 		join_date TIMESTAMP WITH TIME ZONE NOT NULL)""")
+	schema.create("slack_user", """(
+		slack_team_id VARCHAR NOT NULL,
+		slack_user_id VARCHAR NOT NULL,
+		slack_user_name VARCHAR NOT NULL,
+		user_id INTEGER NOT NULL,
+		PRIMARY KEY(slack_team_id, slack_user_id))""")
