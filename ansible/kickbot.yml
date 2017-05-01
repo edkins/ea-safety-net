@@ -4,7 +4,7 @@
   gather_facts: no
 
   tasks:
-  - include: easn-https-tasks.yml
+  - include: https-tasks.yml
 
   - name: Update kickbot python scripts
     synchronize:
@@ -29,4 +29,4 @@
     - restart kickbot
 
   handlers:
-    - include: easn-handlers.yml
+    - include: handlers.yml

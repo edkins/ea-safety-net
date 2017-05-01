@@ -53,7 +53,7 @@
   gather_facts: no
 
   tasks:
-  - include: easn-https-tasks.yml
+  - include: https-tasks.yml
 
   - name: Update index.html
     template:
@@ -92,5 +92,5 @@
     - restart userpage
 
   handlers:
-    - include: easn-handlers.yml
+    - include: handlers.yml
 

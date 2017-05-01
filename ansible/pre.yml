@@ -91,4 +91,4 @@
       name: psycopg2
 
   handlers:
-    - include: easn-handlers.yml
+    - include: handlers.yml
