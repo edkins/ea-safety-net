@@ -78,6 +78,17 @@ def valid_session_stuff(a, env, start_response):
 def valid_session(a):
 	return (lambda env,start_response: valid_session_stuff(a,env,start_response))
 
+def check_is_admin(a, env, start_response):
+	user_id = env['beaker.session']['user_id']
+	privs = up_backend.get_privs(user_id)
+	if not privs.admin:
+		start_response('401 Unauthorized', [('Content-Type', 'text/plain')])
+		return [b'Unauthorized']
+	return a(env, start_response)
+
+def admin_session(a):
+	return valid_session(lambda env,start_response: check_is_admin(a,env,start_response))
+
 def app_slackauth(env, start_response):
 	try:
 		q = urllib.parse.parse_qs(env['QUERY_STRING'])
@@ -119,11 +130,17 @@ def app_profile(env, start_response):
 	start_response('200 OK', [('Content-Type', 'application/json')])
 	return [result]
 
+def app_user_list(env, start_response):
+	result = up_backend.get_user_list().json_bytes()
+	start_response('200 OK', [('Content-Type', 'application/json')])
+	return [result]
+
 app = selector.Selector()
 app.add('/userpage/slackauth', GET=app_slackauth)
 app.add('/userpage/logout', POST=valid_session(app_logout))
 app.add('/userpage/privs', GET=valid_session(app_privs))
 app.add('/userpage/profile', GET=valid_session(app_profile))
+app.add('/userpage/user', GET=admin_session(app_user_list))
 
 beaker_config = {'session.key':'id','session.type':'file','session.data_dir':'/var/easn/userpage/beaker','session.cookie_expires':'true','session.secure':'true'}
 

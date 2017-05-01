@@ -1,0 +1,17 @@
+- name: Update static web assets
+  synchronize:
+    src: ../web/static/
+    dest: /var/www/easn/static/
+    delete: yes
+    recursive: yes
+
+- name: Update userpage python scripts
+  synchronize:
+    src: ../userpage/
+    dest: /opt/easn/userpage/
+    delete: yes
+    recursive: yes
+  notify:
+  - data migration
+  - restart userpage
+

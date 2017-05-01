@@ -36,6 +36,20 @@ function get_profile(fn)
 	xhr.send();
 }
 
+function get_users(fn)
+{
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener('load', function() {
+		if (xhr.status === 200)
+		{
+			var obj = JSON.parse(xhr.response);
+			fn(obj.users);
+		}
+	});
+	xhr.open('GET', '/userpage/user');
+	xhr.send();
+}
+
 function fetch_tabs()
 {
 	get_privs( function(privs) {
@@ -122,11 +136,41 @@ function hide_admin_pages()
 	deactivate_tab(document.getElementById('psn-admin-tab'));
 }
 
+function remove_children(node)
+{
+	while (node.firstChild)
+	{
+	    node.removeChild(node.firstChild);
+	}
+}
+
+function add_td(tr, text)
+{
+	var td = document.createElement('td');
+	td.textContent = ''+text;
+	tr.appendChild(td);
+}
+
 function show_admin_page_user()
 {
 	hide_admin_pages();
 	document.getElementById('user-admin').className = 'subpage';
 	activate_tab(document.getElementById('user-admin-tab'));
+	get_users( function(users) {
+		var tbody = document.getElementById('user-admin-tbody');
+		remove_children(tbody);
+		for (var i = 0; i < users.length; i++)
+		{
+			var user = users[i];
+			var tr = document.createElement('tr');
+			add_td(tr,user['user_id']);
+			add_td(tr,user['name']);
+			add_td(tr,user['ultimate_admin']);
+			add_td(tr,user['slack_user_id']);
+			add_td(tr,user['slack_team_id']);
+			tbody.appendChild(tr);
+		}
+	});
 }
 
 function show_admin_page_psn()
@@ -154,7 +198,17 @@ function show_admin_page_psn()
 		<span class="tab" id="psn-admin-tab" onclick="show_admin_page_psn()">PSNs</span>
 	</div>
 	<div class="hidden" id="user-admin">
-		List of users
+		<table>
+			<thead>
+				<th>id</th>
+				<th>name</th>
+				<th>ultimate_admin</th>
+				<th>slack id</th>
+				<th>slack team</th>
+			</thead>
+			<tbody id="user-admin-tbody">
+			</tbody>
+		</table>
 	</div>
 	<div class="hidden" id="psn-admin">
 		List of PSNs

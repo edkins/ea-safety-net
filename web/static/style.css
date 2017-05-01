@@ -63,3 +63,14 @@ div.adminbar .activetab {
 	cursor: default;
 }
 
+table {
+	border: solid #000 1pt;
+	border-collapse: collapse;
+}
+th {
+	background: #000;
+	color: #fff;
+	border: solid #fff 1pt;
+	padding: 3pt 5pt;
+}
+

@@ -83,6 +83,19 @@ class UserPageDB:
 		finally:
 			cur.close()
 
+	def user_list(self):
+		cur = self.db.cursor()
+		try:
+			cur.execute("""
+				SELECT users_001.user_id, users_001.name, users_001.ultimate_admin,
+					slack_user_001.slack_user_id, slack_user_001.slack_team_id
+				FROM users_001 LEFT OUTER JOIN slack_user_001
+				ON users_001.user_id = slack_user_001.user_id
+				""")
+			return cur.fetchall()
+		finally:
+			cur.close()
+
 	def close(self):
 		self.db.close()
 
@@ -148,6 +161,26 @@ def get_profile(user_id):
 	finally:
 		udb.close()
 
+def get_user_list():
+	"""
+	Returns a list of all users
+	"""
+	udb = UserPageDB()
+	try:
+		users = udb.user_list()
+		return UserList([transform_user(u) for u in users])
+	finally:
+		udb.close()
+
+def transform_user(row):
+	return {
+		'user_id': str(row[0]),
+		'name': row[1],
+		'ultimate_admin': row[2],
+		'slack_user_id': row[3],
+		'slack_team_id': row[4]
+	}
+
 class Privs:
 	def __init__(self, admin):
 		self.admin = admin
@@ -166,3 +199,11 @@ class Profile:
 	def json_bytes(self):
 		obj = {'profile':{'name':self.name}}
 		return json_bytes(obj, schema.profile_response)
+
+class UserList:
+	def __init__(self, users):
+		self.users = users
+
+	def json_bytes(self):
+		obj = {'users':self.users}
+		return json_bytes(obj, schema.user_list_response)

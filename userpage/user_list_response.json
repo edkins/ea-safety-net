@@ -1,0 +1,21 @@
+{
+	"type": "object",
+	"properties": {
+		"users": {
+			"type": "array",
+			"element": {
+				"type": "object",
+				"properties": {
+					"user_id": {"type":"string"},
+					"name": {"type":"string"},
+					"ultimate_admin": {"type":"boolean"},
+					"slack_user_id": {"type":"string"},
+					"slack_team_id": {"type":"string"}
+				},
+				"required": ["user_id","name","ultimate_admin"]
+			}
+		}
+	},
+	"required": ["users"]
+}
+

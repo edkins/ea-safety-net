@@ -60,28 +60,13 @@
       src: ../web/index.j2
       dest: /var/www/easn/index.html
 
-  - name: Update static web assets
-    synchronize:
-      src: ../web/static/
-      dest: /var/www/easn/static/
-      delete: yes
-      recursive: yes
-
-  - name: Update userpage python scripts
-    synchronize:
-      src: ../userpage/
-      dest: /opt/easn/userpage/
-      delete: yes
-      recursive: yes
-    notify:
-    - data migration
-    - restart userpage
-
   - name: Update userpage config
     template:
       src: ../config-files/userpage-conf.j2
       dest: /etc/easn/userpage.conf
     notify: restart userpage
+
+  - include: topup.yml
 
   - name: Update userpage systemd unit
     synchronize:

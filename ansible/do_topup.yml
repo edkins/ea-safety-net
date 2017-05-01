@@ -1,0 +1,11 @@
+---
+- hosts: easafetynet
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - include: topup.yml
+
+  handlers:
+    - include: handlers.yml
+
