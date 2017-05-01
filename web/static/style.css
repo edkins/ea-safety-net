@@ -39,3 +39,27 @@ body {
 * {
 	font-family: sans-serif;
 }
+
+div.adminbar {
+	border: solid #080;
+	border-width: 0 0 1pt 0;
+	padding: 9pt;
+	margin-bottom: 6pt;
+}
+
+div.adminbar .tab {
+	border: solid #080 1pt;
+	border-radius: 6pt;
+	padding: 3pt;
+	cursor: default;
+}
+
+div.adminbar .activetab {
+	border: solid #080 1pt;
+	border-radius: 6pt;
+	background: #080;
+	color: #fff;
+	padding: 3pt;
+	cursor: default;
+}
+

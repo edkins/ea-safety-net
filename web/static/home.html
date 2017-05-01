@@ -92,7 +92,7 @@ function hide_pages()
 function show_user_page()
 {
 	get_profile( function(profile) {
-		hide_pages()
+		hide_pages();
 		document.getElementById('user-page').className = 'page';
 		activate_tab(document.getElementById('user-tab'));
 		document.getElementById('greeting-name').textContent = profile.name;
@@ -101,21 +101,44 @@ function show_user_page()
 
 function show_admin_page()
 {
-	hide_pages()
+	hide_pages();
 	document.getElementById('admin-page').className = 'page';
 	activate_tab(document.getElementById('admin-tab'));
+	show_admin_page_user();
 }
 
 function show_psn_page()
 {
-	hide_pages()
+	hide_pages();
 	document.getElementById('psn-page').className = 'page';
 	activate_tab(document.getElementById('psn-tab'));
+}
+
+function hide_admin_pages()
+{
+	document.getElementById('user-admin').className = 'hidden';
+	document.getElementById('psn-admin').className = 'hidden';
+	deactivate_tab(document.getElementById('user-admin-tab'));
+	deactivate_tab(document.getElementById('psn-admin-tab'));
+}
+
+function show_admin_page_user()
+{
+	hide_admin_pages();
+	document.getElementById('user-admin').className = 'subpage';
+	activate_tab(document.getElementById('user-admin-tab'));
+}
+
+function show_admin_page_psn()
+{
+	hide_admin_pages();
+	document.getElementById('psn-admin').className = 'subpage';
+	activate_tab(document.getElementById('psn-admin-tab'));
 }
 </script>
 </head>
 <body onload="fetch_tabs()">
-<div class="header" id="header">
+<div class="header">
 	<span class="hidden" id="user-tab" onclick="show_user_page()">User</span>
 	<span class="hidden" id="admin-tab" onclick="show_admin_page()">Admin</span>
 	<span class="hidden" id="psn-tab" onclick="show_psn_page()">PSN</span>
@@ -123,13 +146,22 @@ function show_psn_page()
 	<span class="button" onclick="logout()">Logout</span>
 </div>
 <div class="hidden" id="user-page">
-Welcome, <span id="greeting-name"></span>!
+	Welcome, <span id="greeting-name"></span>!
 </div>
 <div class="hidden" id="admin-page">
-Admin stuff
+	<div class="adminbar">
+		<span class="tab" id="user-admin-tab" onclick="show_admin_page_user()">Users</span>
+		<span class="tab" id="psn-admin-tab" onclick="show_admin_page_psn()">PSNs</span>
+	</div>
+	<div class="hidden" id="user-admin">
+		List of users
+	</div>
+	<div class="hidden" id="psn-admin">
+		List of PSNs
+	</div>
 </div>
 <div class="hidden" id="psn-page">
-PSN stuff
+	PSN stuff
 </div>
 </body>
 </html>
