@@ -66,6 +66,23 @@ class UserPageDB:
 		finally:
 			cur.close()
 
+	def user_profile(self, user_id):
+		if not isinstance(user_id, str):
+			raise ValueError('user_id must be a string, was %s' % (user_id,))
+
+		cur = self.db.cursor()
+		try:
+			cur.execute("SELECT name FROM users_001 WHERE user_id = %s", (int(user_id),))
+			results = cur.fetchall()
+			if len(results) == 0:
+				raise AuthError('User not found: %s' % (user_id,))
+			elif len(results) == 1:
+				return (results[0][0],)
+			else:
+				raise WeirdStateError('Multiple users returned which doesn\'t make sense because that should have been a primary key')
+		finally:
+			cur.close()
+
 	def close(self):
 		self.db.close()
 
@@ -120,6 +137,17 @@ def get_privs(user_id):
 	finally:
 		udb.close()
 
+def get_profile(user_id):
+	"""
+	Returns an object representing a user's profile, including their name. Throws an exception if the user doesn't exist.
+	"""
+	udb = UserPageDB()
+	try:
+		(name,) = udb.user_profile(user_id)
+		return Profile(name)
+	finally:
+		udb.close()
+
 class Privs:
 	def __init__(self, admin):
 		self.admin = admin
@@ -131,3 +159,10 @@ class Privs:
 		obj = {'privileges':privs}
 		return json_bytes(obj, schema.privs_response)
 
+class Profile:
+	def __init__(self, name):
+		self.name = name
+
+	def json_bytes(self):
+		obj = {'profile':{'name':self.name}}
+		return json_bytes(obj, schema.profile_response)

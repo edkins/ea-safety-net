@@ -8,15 +8,28 @@ div.header .tab {
 	border-radius: 6pt 6pt 0pt 0pt;
 	cursor: default;
 }
+div.header .activetab {
+	background: #fff;
+	padding: 6pt;
+	border-radius: 6pt 6pt 0pt 0pt;
+	cursor: default;
+}
 div.header .button {
 	background: #fcc;
 	padding: 3pt;
 	border-radius: 5pt;
 	cursor: default;
 }
+div.header .spacer {
+	padding: 0pt 15pt;
+}
 
 .hidden {
 	display: none;
+}
+
+div.page {
+	padding: 8pt 6pt;
 }
 
 body {

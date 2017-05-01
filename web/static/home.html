@@ -3,14 +3,15 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="/static/style.css">
 <script>
+'use strict';
 function get_privs(fn)
 {
-	xhr = new XMLHttpRequest();
+	var xhr = new XMLHttpRequest();
 	xhr.addEventListener('load', function() {
 		if (xhr.status === 200)
 		{
-			obj = JSON.parse(xhr.response);
-			fn(obj['privileges']);
+			var obj = JSON.parse(xhr.response);
+			fn(obj.privileges);
 		}
 		else
 		{
@@ -21,33 +22,114 @@ function get_privs(fn)
 	xhr.send();
 }
 
+function get_profile(fn)
+{
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener('load', function() {
+		if (xhr.status === 200)
+		{
+			var obj = JSON.parse(xhr.response);
+			fn(obj.profile);
+		}
+	});
+	xhr.open('GET', '/userpage/profile');
+	xhr.send();
+}
+
 function fetch_tabs()
 {
 	get_privs( function(privs) {
-		document.getElementById('user-tab').className = ('user' in privs) ? 'tab' : 'hidden';
-		document.getElementById('admin-tab').className = ('admin' in privs) ? 'tab' : 'hidden';
-		document.getElementById('psn-tab').className = ('psn' in privs) ? 'tab' : 'hidden';
+		if ('user' in privs)
+		{
+			document.getElementById('user-tab').className = ('user' in privs) ? 'tab' : 'hidden';
+			document.getElementById('admin-tab').className = ('admin' in privs) ? 'tab' : 'hidden';
+			document.getElementById('psn-tab').className = ('psn' in privs) ? 'tab' : 'hidden';
+			show_user_page()
+		}
+		else
+		{
+			logout();
+		}
 	} );
 }
 
 function logout()
 {
-	xhr = new XMLHttpRequest();
+	var xhr = new XMLHttpRequest();
 	xhr.addEventListener('load', function() {
 		window.location.replace('/index.html')
 	});
 	xhr.open('POST', '/userpage/logout');
 	xhr.send();
 }
+
+function deactivate_tab(tab)
+{
+	if (tab.className === 'activetab')
+	{
+		tab.className = 'tab';
+	}
+}
+
+function activate_tab(tab)
+{
+	if (tab.className === 'tab')
+	{
+		tab.className = 'activetab';
+	}
+}
+
+function hide_pages()
+{
+	document.getElementById('user-page').className = 'hidden';
+	document.getElementById('admin-page').className = 'hidden';
+	document.getElementById('psn-page').className = 'hidden';
+	deactivate_tab(document.getElementById('user-tab'));
+	deactivate_tab(document.getElementById('admin-tab'));
+	deactivate_tab(document.getElementById('psn-tab'));
+}
+
+function show_user_page()
+{
+	get_profile( function(profile) {
+		hide_pages()
+		document.getElementById('user-page').className = 'page';
+		activate_tab(document.getElementById('user-tab'));
+		document.getElementById('greeting-name').textContent = profile.name;
+	});
+}
+
+function show_admin_page()
+{
+	hide_pages()
+	document.getElementById('admin-page').className = 'page';
+	activate_tab(document.getElementById('admin-tab'));
+}
+
+function show_psn_page()
+{
+	hide_pages()
+	document.getElementById('psn-page').className = 'page';
+	activate_tab(document.getElementById('psn-tab'));
+}
 </script>
 </head>
 <body onload="fetch_tabs()">
 <div class="header" id="header">
-	<span class="hidden" id="user-tab">User</span>
-	<span class="hidden" id="admin-tab">Admin</span>
-	<span class="hidden" id="psn-tab">PSN</span>
+	<span class="hidden" id="user-tab" onclick="show_user_page()">User</span>
+	<span class="hidden" id="admin-tab" onclick="show_admin_page()">Admin</span>
+	<span class="hidden" id="psn-tab" onclick="show_psn_page()">PSN</span>
 	<span class="spacer"></span>
 	<span class="button" onclick="logout()">Logout</span>
+</div>
+<div class="hidden" id="user-page">
+Welcome, <span id="greeting-name"></span>!
+</div>
+<div class="hidden" id="admin-page">
+Admin stuff
+</div>
+<div class="hidden" id="psn-page">
+PSN stuff
 </div>
 </body>
 </html>

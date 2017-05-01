@@ -61,6 +61,23 @@ def redirect(path, env, start_response):
 	start_response('303 See Other', [('Content-Type', 'text/plain'),('Location',url)])
 	return [b'']
 
+def valid_session_stuff(a, env, start_response):
+	session = env['beaker.session']
+	if session.last_accessed == None:
+		print('session.last_accessed is None')
+		return session_timed_out(env, start_response)
+	time_elapsed = time.time() - session.last_accessed
+	if time_elapsed >= userpage_conf['session_timeout_seconds']:
+		print('session timed out with time elapsed ' + str(time_elapsed))
+		return session_timed_out(env, start_response)
+	if 'user_id' not in session:
+		print('user_id not in session')
+		return session_timed_out(env, start_response)
+	return a(env, start_response)
+
+def valid_session(a):
+	return (lambda env,start_response: valid_session_stuff(a,env,start_response))
+
 def app_slackauth(env, start_response):
 	try:
 		q = urllib.parse.parse_qs(env['QUERY_STRING'])
@@ -90,33 +107,23 @@ def app_privs(env, start_response):
 	start_response('200 OK', [('Content-Type', 'application/json')])
 	return [result]
 
-def valid_session_stuff(a, env, start_response):
-	session = env['beaker.session']
-	if session.last_accessed == None:
-		print('session.last_accessed is None')
-		return session_timed_out(env, start_response)
-	time_elapsed = time.time() - session.last_accessed
-	if time_elapsed >= userpage_conf['session_timeout_seconds']:
-		print('session timed out with time elapsed ' + str(time_elapsed))
-		return session_timed_out(env, start_response)
-	if 'user_id' not in session:
-		print('user_id not in session')
-		return session_timed_out(env, start_response)
-	return a(env, start_response)
-
-def valid_session(a):
-	return (lambda env,start_response: valid_session_stuff(a,env,start_response))
-
 def app_logout(env, start_response):
 	session = env['beaker.session']
 	session.delete()
 	start_response('204 No Content', [])
 	return []
 
+def app_profile(env, start_response):
+	user_id = env['beaker.session']['user_id']
+	result = up_backend.get_profile(user_id).json_bytes()
+	start_response('200 OK', [('Content-Type', 'application/json')])
+	return [result]
+
 app = selector.Selector()
 app.add('/userpage/slackauth', GET=app_slackauth)
 app.add('/userpage/logout', POST=valid_session(app_logout))
 app.add('/userpage/privs', GET=valid_session(app_privs))
+app.add('/userpage/profile', GET=valid_session(app_profile))
 
 beaker_config = {'session.key':'id','session.type':'file','session.data_dir':'/var/easn/userpage/beaker','session.cookie_expires':'true','session.secure':'true'}
 

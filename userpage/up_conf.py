@@ -7,6 +7,7 @@ class Schemas:
 		self.slack_oauth_response = json.load(open('/opt/easn/userpage/slack_oauth_response.json'))
 		self.slack_user_identity_response = json.load(open('/opt/easn/userpage/slack_user_identity_response.json'))
 		self.privs_response = json.load(open('/opt/easn/userpage/privs_response.json'))
+		self.profile_response = json.load(open('/opt/easn/userpage/profile_response.json'))
 
 def read_json_file(filename, schema):
 	with open(filename) as file:
