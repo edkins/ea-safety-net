@@ -1,4 +1,6 @@
 from up_conf import userpage_conf
+from up_conf import schema
+from up_conf import json_bytes
 import sql_helper
 
 class WeirdStateError(Exception):
@@ -47,6 +49,23 @@ class UserPageDB:
 		finally:
 			cur.close()
 
+	def user_privileges(self, user_id):
+		if not isinstance(user_id, str):
+			raise ValueError('user_id must be a string, was %s' % (user_id,))
+
+		cur = self.db.cursor()
+		try:
+			cur.execute("SELECT ultimate_admin FROM users_001 WHERE user_id = %s", (int(user_id),))
+			results = cur.fetchall()
+			if len(results) == 0:
+				raise AuthError('User not found: %s' % (user_id,))
+			elif len(results) == 1:
+				return (results[0][0],)
+			else:
+				raise WeirdStateError('Multiple users returned which doesn\'t make sense because that should have been a primary key')
+		finally:
+			cur.close()
+
 	def close(self):
 		self.db.close()
 
@@ -89,3 +108,26 @@ def get_or_create_user_id(slack_team_id, slack_user_id, slack_user_name):
 		return udb.add_new_user_from_slack(slack_team_id, slack_user_id, slack_user_name, ultimate_admin)
 	finally:
 		udb.close()
+
+def get_privs(user_id):
+	"""
+	Returns an object representing a user's privileges. Throws an exception if the user doesn't exist.
+	"""
+	udb = UserPageDB()
+	try:
+		(admin,) = udb.user_privileges(user_id)
+		return Privs(admin)
+	finally:
+		udb.close()
+
+class Privs:
+	def __init__(self, admin):
+		self.admin = admin
+
+	def json_bytes(self):
+		privs = {'user':{}}
+		if self.admin:
+			privs['admin'] = {}
+		obj = {'privileges':privs}
+		return json_bytes(obj, schema.privs_response)
+

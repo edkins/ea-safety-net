@@ -74,7 +74,7 @@ def app_slackauth(env, start_response):
 		user_id = up_backend.get_or_create_user_id(slack_team_id, slack_user_id, slack_user_name)
 		create_session(env, user_id)
 
-		return redirect('/userpage/home', env, start_response)
+		return redirect('/static/home.html', env, start_response)
 	except:
 		traceback.print_exc()
 		return login_failed(env,start_response)
@@ -83,6 +83,12 @@ def app_home(env, start_response):
 	session = env['beaker.session']
 	start_response('200 OK', [('Content-Type', 'text/plain')])
 	return [bytes('Yeah you are logged in as ' + session['user_id'],'utf-8')]
+
+def app_privs(env, start_response):
+	user_id = env['beaker.session']['user_id']
+	result = up_backend.get_privs(user_id).json_bytes()
+	start_response('200 OK', [('Content-Type', 'application/json')])
+	return [result]
 
 def valid_session_stuff(a, env, start_response):
 	session = env['beaker.session']
@@ -103,7 +109,7 @@ def valid_session(a):
 
 app = selector.Selector()
 app.add('/userpage/slackauth', GET=app_slackauth)
-app.add('/userpage/home', GET=valid_session(app_home))
+app.add('/userpage/privs', GET=valid_session(app_privs))
 
 beaker_config = {'session.key':'id','session.type':'file','session.data_dir':'/var/easn/userpage/beaker','session.cookie_expires':'true','session.secure':'true'}
 

@@ -1,0 +1,21 @@
+div.header {
+	background: #67c;
+	padding: 9pt 9pt 6pt 9pt;
+}
+div.header .button {
+	background: #9cf;
+	padding: 6pt;
+	border-radius: 6pt 6pt 0pt 0pt;
+}
+
+.hidden {
+	display: none;
+}
+
+body {
+	margin: 0;
+}
+
+* {
+	font-family: sans-serif;
+}

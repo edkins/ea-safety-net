@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/static/style.css">
+<script>
+function get_privs(fn)
+{
+	xhr = new XMLHttpRequest();
+	xhr.addEventListener('load', function() {
+		if (xhr.status === 200)
+		{
+			obj = JSON.parse(xhr.response);
+			fn(obj['privileges']);
+		}
+		else
+		{
+			fn({});
+		}
+	});
+	xhr.open('GET', '/userpage/privs');
+	xhr.send();
+}
+
+function fetch_tabs()
+{
+	get_privs( function(privs) {
+		document.getElementById('user-tab').className = ('user' in privs) ? 'button' : 'hidden';
+		document.getElementById('admin-tab').className = ('admin' in privs) ? 'button' : 'hidden';
+		document.getElementById('psn-tab').className = ('psn' in privs) ? 'button' : 'hidden';
+	} );
+}
+</script>
+</head>
+<body onload="fetch_tabs()">
+<div class="header" id="header">
+	<span class="hidden" id="user-tab">User</span>
+	<span class="hidden" id="admin-tab">Admin</span>
+	<span class="hidden" id="psn-tab">PSN</span>
+</div>
+</body>
+</html>
+

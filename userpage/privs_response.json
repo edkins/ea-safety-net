@@ -1,0 +1,15 @@
+{
+	"type": "object",
+	"properties": {
+		"privileges": {
+			"type": "object",
+			"properties": {
+				"user": { "type": "object" },
+				"admin": { "type": "object" },
+				"psn": { "type": "object" }
+			}
+		}
+	},
+	"required": ["privileges"]
+}
+
