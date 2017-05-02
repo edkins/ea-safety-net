@@ -5,7 +5,7 @@ from up_conf import read_json_input
 from up_conf import json_bytes
 from up_conf import schema
 
-from up_slack_kb import slack_api
+import up_slack_kb
 
 class AuthorizationFailure(Exception):
 	pass
@@ -24,7 +24,7 @@ def _slack_event_callback(env, start_response, req):
 	ev = req['event']
 	if 'text' in ev and 'kick me' in ev['text'] and 'channel' in ev and 'user' in ev:
 		print('Kicking a user')
-		slack_api('groups.kick', {"channel":ev['channel'], "user":ev['user']})
+		up_slack_kb.kick(ev['channel'], ev['user'])
 
 	start_response('200 OK', [])
 	return [b'']

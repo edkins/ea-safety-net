@@ -1,0 +1,10 @@
+{
+	"type":"object",
+	"properties": {
+		"token":{"type":"string"},
+		"channel":{"type":"string"},
+		"user":{"type":"string"}
+	},
+	"required": ["token","channel","user"],
+	"additionalProperties": false
+}

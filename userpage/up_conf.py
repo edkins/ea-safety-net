@@ -11,6 +11,8 @@ class Schemas:
 		self.user_list_response = json.load(open('/opt/easn/userpage/user_list_response.json'))
 		self.slack_incoming_request = json.load(open('/opt/easn/userpage/slack_incoming_request.json'))
 		self.slack_challenge_response = json.load(open('/opt/easn/userpage/slack_challenge_response.json'))
+		self.groups_kick_request = json.load(open('/opt/easn/userpage/groups_kick_request.json'))
+		self.groups_kick_response = json.load(open('/opt/easn/userpage/groups_kick_response.json'))
 
 def read_json_file(filename, schema):
 	with open(filename) as file:
