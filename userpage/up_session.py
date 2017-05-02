@@ -29,10 +29,12 @@ def valid_session_stuff(a, env, start_response):
 	session = env['beaker.session']
 	if session.last_accessed == None:
 		print('session.last_accessed is None')
+		session.delete()
 		return session_timed_out(env, start_response)
 	time_elapsed = time.time() - session.last_accessed
 	if time_elapsed >= userpage_conf['session_timeout_seconds']:
 		print('session timed out with time elapsed ' + str(time_elapsed))
+		session.delete()
 		return session_timed_out(env, start_response)
 	if 'user_id' not in session:
 		print('user_id not in session')

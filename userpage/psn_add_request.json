@@ -1,0 +1,19 @@
+{
+	"type": "object",
+	"properties": {
+		"psn_name": {"type":"string"},
+		"channel": {
+			"type": "object",
+			"properties": {
+				"channel_name": {"type":"string"},
+				"channel_type": {"enum":["slack_group"]},
+				"slack_team_id": {"type":"string"},
+				"slack_group_id": {"type":"string"}
+			},
+			"required": ["channel_type","slack_team_id","slack_group_id"],
+			"additionalProperties": false
+		}
+	},
+	"required": ["psn_name","channel"]
+}
+

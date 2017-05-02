@@ -78,6 +78,22 @@ function get_psn_list(fn)
 	xhr.send();
 }
 
+function post_add_psn(request, fn)
+{
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener('load', function() {
+		if (xhr.status === 200)
+		{
+			var obj = JSON.parse(xhr.response);
+			fn(obj);
+		}
+	});
+	xhr.open('POST', '/userpage/psn/add');
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.send(JSON.stringify(request));
+	
+}
+
 function fetch_tabs()
 {
 	get_privs( function(privs) {
@@ -204,7 +220,7 @@ function show_admin_page_user()
 function update_psn_channel_suggestions()
 {
 	get_psn_group_suggestions( function(channels) {
-		var sel = document.getElementById('new-psn-group');
+		var sel = document.getElementById('new-psn-channel');
 		remove_children(sel);
 		for (var i = 0; i < channels.length; i++) {
 			var channel = channels[i];
@@ -239,6 +255,24 @@ function show_admin_page_psn()
 		
 		update_psn_channel_suggestions();
 	} );
+}
+
+function add_psn()
+{
+	var name = document.getElementById('new-psn-name').value;
+	var channelJson = document.getElementById('new-psn-channel').value;
+	var channel = JSON.parse(channelJson);
+
+	var request = {
+		'psn_name':name,
+		'channel':channel
+	};
+
+	post_add_psn(request, function(response) {
+		document.getElementById('new-psn-name').value = '';
+		show_admin_page_psn();
+	});
+	
 }
 </script>
 </head>
@@ -285,9 +319,9 @@ function show_admin_page_psn()
 		</table>
 		<div class="creation-form">
 		To create a new one:<br>
-		Choose a private slack channel: <select id="new-psn-group"></select><br>
-		Enter a name for your PSN: <input type="text"><br>
-		<input type="button" value="Create it!">
+		Choose a private slack channel: <select id="new-psn-channel"></select><br>
+		Enter a name for your PSN: <input type="text" id ="new-psn-name"><br>
+		<input type="button" value="Create it!" onclick="add_psn()">
 		</div>
 	</div>
 </div>

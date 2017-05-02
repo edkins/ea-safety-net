@@ -1,0 +1,8 @@
+{
+	"type": "object",
+	"properties": {
+		"psn_id": {"type":"string"}
+	},
+	"required": ["psn_id"]
+}
+

@@ -112,6 +112,18 @@ class UserPageDB:
 		finally:
 			cur.close()
 
+	def add_psn(self, psn_name, slack_team_id, slack_group_id):
+		cur = self.db.cursor()
+		try:
+			cur.execute("SELECT NEXTVAL('psn_psn_id_seq')")
+			psn_id = cur.fetchone()[0]
+			cur.execute("""INSERT INTO psn(psn_id,psn_name,slack_group_id,slack_team_id,creation_date)
+				VALUES (%s,%s,%s,%s,NOW())""", (psn_id,psn_name,slack_group_id,slack_team_id))
+			self.db.commit()
+			return str(psn_id)
+		finally:
+			cur.close()
+
 	def close(self):
 		self.db.close()
 
@@ -255,3 +267,14 @@ class UserList:
 	def json_bytes(self):
 		obj = {'users':self.users}
 		return json_bytes(obj, schema.user_list_response)
+
+def add_psn(psn_name, slack_team_id, slack_group_id):
+	"""
+	Adds a new PSN and returns its id as a string.
+	"""
+	udb = UserPageDB()
+	try:
+		return udb.add_psn(psn_name, slack_team_id, slack_group_id)
+	finally:
+		udb.close()
+

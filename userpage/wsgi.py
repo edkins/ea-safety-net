@@ -10,6 +10,7 @@ from up_user import app_privs
 from up_user import app_profile
 from up_admin import app_user_list
 from up_admin import app_psn_list
+from up_admin import app_psn_add
 from up_admin import app_psn_channel_suggestions
 
 from up_kickbot import app_kickbot
@@ -22,6 +23,7 @@ app.add('/userpage/profile', GET=valid_session(app_profile))
 
 app.add('/userpage/user', GET=admin_session(app_user_list))
 app.add('/userpage/psn', GET=admin_session(app_psn_list))
+app.add('/userpage/psn/add', POST=admin_session(app_psn_add))
 app.add('/userpage/suggest/psn_channel', GET=admin_session(app_psn_channel_suggestions))
 
 app.add('/kickbot/slackendpoint', POST=app_kickbot)
