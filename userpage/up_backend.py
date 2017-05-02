@@ -96,6 +96,14 @@ class UserPageDB:
 		finally:
 			cur.close()
 
+	def existing_psn_team_and_group_ids(self):
+		cur = self.db.cursor()
+		try:
+			cur.execute("SELECT slack_team_id, slack_group_id FROM psn_001")
+			return cur.fetchall()
+		finally:
+			cur.close()
+
 	def close(self):
 		self.db.close()
 
@@ -169,6 +177,18 @@ def get_user_list():
 	try:
 		users = udb.user_list()
 		return UserList([transform_user(u) for u in users])
+	finally:
+		udb.close()
+
+def get_existing_psn_team_and_group_ids():
+	"""
+	Returns a list of team/group id pairs that are in use by existing (non-closed) PSN's.
+	This is so that they can be filtered out of the suggestion list.
+	"""
+	udb = UserPageDB()
+	try:
+		psns = udb.existing_psn_team_and_group_ids()
+		return [(p[0],p[1]) for p in psns]
 	finally:
 		udb.close()
 

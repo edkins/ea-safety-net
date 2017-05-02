@@ -1,0 +1,19 @@
+{
+	"type":"object",
+	"properties": {
+		"ok":{"type":"boolean"},
+		"groups":{
+			"type":"array",
+			"element":{
+				"type":"object",
+				"properties":{
+					"id":{"type":"string"},
+					"name":{"type":"string"},
+					"is_archived":{"type":"boolean"}
+				},
+				"required":["id","name","is_archived"]
+			}
+		}
+	},
+	"required": ["ok"]
+}

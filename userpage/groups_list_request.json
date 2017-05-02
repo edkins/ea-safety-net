@@ -1,0 +1,9 @@
+{
+	"type":"object",
+	"properties": {
+		"token":{"type":"string"},
+		"exclude_archived":{"type":"boolean"}
+	},
+	"required": ["token"],
+	"additionalProperties": false
+}

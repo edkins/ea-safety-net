@@ -50,6 +50,20 @@ function get_users(fn)
 	xhr.send();
 }
 
+function get_psn_group_suggestions(fn)
+{
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener('load', function() {
+		if (xhr.status === 200)
+		{
+			var obj = JSON.parse(xhr.response);
+			fn(obj.psn_channel_suggestions);
+		}
+	});
+	xhr.open('GET', '/userpage/suggest/psn_channel');
+	xhr.send();
+}
+
 function fetch_tabs()
 {
 	get_privs( function(privs) {
@@ -178,6 +192,18 @@ function show_admin_page_psn()
 	hide_admin_pages();
 	document.getElementById('psn-admin').className = 'subpage';
 	activate_tab(document.getElementById('psn-admin-tab'));
+	get_psn_group_suggestions( function(channels) {
+		var sel = document.getElementById('new-psn-group');
+		remove_children(sel);
+		for (var i = 0; i < channels.length; i++) {
+			var channel = channels[i];
+			var name = channel.channel_name;
+			var option = document.createElement('option');
+			option.value = JSON.stringify(channel);
+			option.textContent = name;
+			sel.append(option);
+		}
+	} );
 }
 </script>
 </head>
@@ -212,6 +238,12 @@ function show_admin_page_psn()
 	</div>
 	<div class="hidden" id="psn-admin">
 		List of PSNs
+		<div class="creation-form">
+		To create a new one:<br>
+		Choose a private slack channel: <select id="new-psn-group"></select><br>
+		Enter a name for your PSN: <input type="text"><br>
+		<input type="button" value="Create it!">
+		</div>
 	</div>
 </div>
 <div class="hidden" id="psn-page">
