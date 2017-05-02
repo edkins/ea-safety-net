@@ -1,32 +1,14 @@
 from beaker.middleware import SessionMiddleware
 import selector
 
-from up_conf import schema
-from up_conf import userpage_conf
-import up_backend
-
 from up_session import valid_session
 from up_session import admin_session
 from up_session import app_slackauth
 from up_session import app_logout
 
-
-def app_privs(env, start_response):
-	user_id = env['beaker.session']['user_id']
-	result = up_backend.get_privs(user_id).json_bytes()
-	start_response('200 OK', [('Content-Type', 'application/json')])
-	return [result]
-
-def app_profile(env, start_response):
-	user_id = env['beaker.session']['user_id']
-	result = up_backend.get_profile(user_id).json_bytes()
-	start_response('200 OK', [('Content-Type', 'application/json')])
-	return [result]
-
-def app_user_list(env, start_response):
-	result = up_backend.get_user_list().json_bytes()
-	start_response('200 OK', [('Content-Type', 'application/json')])
-	return [result]
+from up_user import app_privs
+from up_user import app_profile
+from up_admin import app_user_list
 
 app = selector.Selector()
 app.add('/userpage/slackauth', GET=app_slackauth)
