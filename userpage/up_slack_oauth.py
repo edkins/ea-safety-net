@@ -20,6 +20,7 @@ def slack_oauth(code):
 	return response
 
 def slack_user_identity(token):
+	""" Currently unused """
 	url = 'https://slack.com/api/users.identity'
 	params = {"token": token}
 	r = requests.get(url, params=params)
