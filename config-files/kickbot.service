@@ -1,6 +1,0 @@
-[Unit]
-Description=Server for slack app which kicks users out of private channels if they were invited unexpectedly
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/python3 -u /opt/easn/kickbot/kickbot.py

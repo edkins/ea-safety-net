@@ -10,11 +10,6 @@
 - name: daemon reload
   command: systemctl daemon-reload
 
-- name: restart services
-  service:
-    name: kickbot
-    state: restarted
-
 - name: restart userpage
   service:
     name: userpage

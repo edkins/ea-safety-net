@@ -10,12 +10,16 @@ from up_user import app_privs
 from up_user import app_profile
 from up_admin import app_user_list
 
+from up_kickbot import app_kickbot
+
 app = selector.Selector()
 app.add('/userpage/slackauth', GET=app_slackauth)
 app.add('/userpage/logout', POST=valid_session(app_logout))
 app.add('/userpage/privs', GET=valid_session(app_privs))
 app.add('/userpage/profile', GET=valid_session(app_profile))
 app.add('/userpage/user', GET=admin_session(app_user_list))
+
+app.add('/kickbot/slackendpoint', POST=app_kickbot)
 
 beaker_config = {'session.key':'id','session.type':'file','session.data_dir':'/var/easn/userpage/beaker','session.cookie_expires':'true','session.secure':'true'}
 
