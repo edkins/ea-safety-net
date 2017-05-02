@@ -27,3 +27,10 @@ def app_psn_channel_suggestions(env, start_response):
 
 	start_response('200 OK', [('Content-Type', 'application/json')])
 	return [json_bytes({'psn_channel_suggestions':result}, schema.psn_channel_suggestions_response)]
+
+def app_psn_list(env, start_response):
+	result = up_backend.get_psn_list()
+
+	start_response('200 OK', [('Content-Type', 'application/json')])
+	return [json_bytes({'psns':result}, schema.psn_list_response)]
+	

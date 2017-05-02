@@ -104,6 +104,14 @@ class UserPageDB:
 		finally:
 			cur.close()
 
+	def psn_list(self):
+		cur = self.db.cursor()
+		try:
+			cur.execute("SELECT psn_id, psn_name, slack_group_id, slack_team_id, creation_date FROM psn_001")
+			return cur.fetchall()
+		finally:
+			cur.close()
+
 	def close(self):
 		self.db.close()
 
@@ -176,9 +184,18 @@ def get_user_list():
 	udb = UserPageDB()
 	try:
 		users = udb.user_list()
-		return UserList([transform_user(u) for u in users])
+		return UserList([_transform_user(u) for u in users])
 	finally:
 		udb.close()
+
+def _transform_user(row):
+	return {
+		'user_id': str(row[0]),
+		'name': row[1],
+		'ultimate_admin': row[2],
+		'slack_user_id': row[3],
+		'slack_team_id': row[4]
+	}
 
 def get_existing_psn_team_and_group_ids():
 	"""
@@ -192,13 +209,24 @@ def get_existing_psn_team_and_group_ids():
 	finally:
 		udb.close()
 
-def transform_user(row):
+def get_psn_list():
+	"""
+	Returns a list of all PSNs
+	"""
+	udb = UserPageDB()
+	try:
+		psns = udb.psn_list()
+		return [_transform_psn(p) for p in psns]
+	finally:
+		udb.close()
+
+def _transform_psn(row):
 	return {
-		'user_id': str(row[0]),
-		'name': row[1],
-		'ultimate_admin': row[2],
-		'slack_user_id': row[3],
-		'slack_team_id': row[4]
+		'psn_id':row[0],
+		'psn_name':row[1],
+		'slack_group_id':row[2],
+		'slack_team_id':row[3],
+		'creation_date':row[4].timestamp()
 	}
 
 class Privs:

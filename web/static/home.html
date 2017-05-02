@@ -64,6 +64,20 @@ function get_psn_group_suggestions(fn)
 	xhr.send();
 }
 
+function get_psn_list(fn)
+{
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener('load', function() {
+		if (xhr.status === 200)
+		{
+			var obj = JSON.parse(xhr.response);
+			fn(obj.psns);
+		}
+	});
+	xhr.open('GET', '/userpage/psn');
+	xhr.send();
+}
+
 function fetch_tabs()
 {
 	get_privs( function(privs) {
@@ -187,11 +201,8 @@ function show_admin_page_user()
 	});
 }
 
-function show_admin_page_psn()
+function update_psn_channel_suggestions()
 {
-	hide_admin_pages();
-	document.getElementById('psn-admin').className = 'subpage';
-	activate_tab(document.getElementById('psn-admin-tab'));
 	get_psn_group_suggestions( function(channels) {
 		var sel = document.getElementById('new-psn-group');
 		remove_children(sel);
@@ -203,6 +214,30 @@ function show_admin_page_psn()
 			option.textContent = name;
 			sel.append(option);
 		}
+	} );
+}
+
+function show_admin_page_psn()
+{
+	hide_admin_pages();
+	document.getElementById('psn-admin').className = 'subpage';
+	activate_tab(document.getElementById('psn-admin-tab'));
+	get_psn_list( function(psns) {
+		var tbody = document.getElementById('psn-admin-tbody');
+		remove_children(tbody);
+		for (var i = 0; i < psns.length; i++)
+		{
+			var psn = psns[i];
+			var tr = document.createElement('tr');
+			add_td(tr,psn['psn_id']);
+			add_td(tr,psn['psn_name']);
+			add_td(tr,psn['slack_group_id']);
+			add_td(tr,psn['slack_team_id']);
+			add_td(tr,new Date(psn['creation_date']));
+			tbody.appendChild(tr);
+		}
+		
+		update_psn_channel_suggestions();
 	} );
 }
 </script>
@@ -237,7 +272,17 @@ function show_admin_page_psn()
 		</table>
 	</div>
 	<div class="hidden" id="psn-admin">
-		List of PSNs
+		<table>
+			<thead>
+				<th>id</th>
+				<th>name</th>
+				<th>slack group</th>
+				<th>slack team</th>
+				<th>created on</th>
+			</thead>
+			<tbody id="psn-admin-tbody">
+			</tbody>
+		</table>
 		<div class="creation-form">
 		To create a new one:<br>
 		Choose a private slack channel: <select id="new-psn-group"></select><br>

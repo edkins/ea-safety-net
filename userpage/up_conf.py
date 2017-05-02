@@ -16,6 +16,7 @@ class Schemas:
 		self.groups_list_request = json.load(open('/opt/easn/userpage/groups_list_request.json'))
 		self.groups_list_response = json.load(open('/opt/easn/userpage/groups_list_response.json'))
 		self.psn_channel_suggestions_response = json.load(open('/opt/easn/userpage/psn_channel_suggestions_response.json'))
+		self.psn_list_response = json.load(open('/opt/easn/userpage/psn_list_response.json'))
 
 def read_json_file(filename, schema):
 	with open(filename) as file:

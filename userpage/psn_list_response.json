@@ -1,0 +1,21 @@
+{
+	"type": "object",
+	"properties": {
+		"psns": {
+			"type": "array",
+			"element": {
+				"type": "object",
+				"properties": {
+					"psn_id": {"type":"string"},
+					"psn_name": {"type":"string"},
+					"slack_group_id": {"type":"string"},
+					"slack_team_id": {"type":"string"},
+					"creation_date": {"type":"integer"}
+				},
+				"required": ["psn_id","psn_name","slack_group_id","slack_team_id","creation_date"]
+			}
+		}
+	},
+	"required": ["psns"]
+}
+
